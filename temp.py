@@ -24,7 +24,7 @@ def HTMLtable(templist):
         day = datas[0]
         time = datas[1]
         table = table+"\n<tr><td>{}</td><td>{}</td><td>{}</td></tr>".format(day,time,str(i)) # fill information in table
-        
+        del dicttemp[get_key(i,dicttemp)]
     table += "</table>"
     print(table)
 
