@@ -17,8 +17,10 @@ def HTMLtable(templist,type_sort):
         dicttemp[daytime] = float(temp)
     if type_sort == 'non-reverse' :
         sortTemp = sorted(dicttemp.values())
-    else :
+    elif  type_sort == 'reverse':
         sortTemp = sorted(dicttemp.values(),reverse=True)
+    else:
+        sortTemp = list(dicttemp.values())
     for i in sortTemp:
         datas = get_key(i,dicttemp).split()
         day = datas[0]
