@@ -6,29 +6,30 @@ from time import localtime
 
 # function for create table and fill informations
 
-def HTMLtable(templist,type_sort):
+def HTMLtable(type_sort):
     table = "<table style='width:50%'>" #config width of table
     table += "<tr><th>DAY</th><th>TIME</th><th>temp(C)</th></tr>"   # write head of table
     dicttemp = {}
-    for line in templist:
-        data = line.split()
-        daytime = data[0]+" "+data[1]
-        temp = data[2]
-        dicttemp[daytime] = float(temp)
-    if type_sort == 'non-reverse' :
-        sortTemp = sorted(dicttemp.values())
-    elif  type_sort == 'reverse':
-        sortTemp = sorted(dicttemp.values(),reverse=True)
-    else:
-        sortTemp = list(dicttemp.values())
-    for i in sortTemp:
-        datas = get_key(i,dicttemp).split()
-        day = datas[0]
-        time = datas[1]
-        table = table+"\n<tr><td>{}</td><td>{}</td><td>{}</td></tr>".format(day,time,str(i)) # fill information in table
-        del dicttemp[get_key(i,dicttemp)]
-    table += "</table>"
-    print(table)
+    with open("demofile2.csv") as file_in:
+        reader = csv.reader(file_in)
+        for row in reader:
+            daytime = str(row[0])+" "+str(row[1])
+            temp = str(row[2])
+            dicttemp[daytime] = float(temp)
+        if type_sort == 'non-reverse' :
+            sortTemp = sorted(dicttemp.values())
+        elif  type_sort == 'reverse':
+            sortTemp = sorted(dicttemp.values(),reverse=True)
+        else:
+            sortTemp = list(dicttemp.values())
+        for i in sortTemp:
+            datas = get_key(i,dicttemp).split()
+            day = datas[0]
+            time = datas[1]
+            table = table+"\n<tr><td>{}</td><td>{}</td><td>{}</td></tr>".format(day,time,str(i)) # fill information in table
+            del dicttemp[get_key(i,dicttemp)]
+        table += "</table>"
+        print(table)
 
 def get_key(val,dic):
     for key, value in dic.items():
@@ -65,15 +66,7 @@ if form.getvalue("name"):
 
 type_sort = form.getvalue("sort")
 # This block show information on browser
-
-with open("demofile2.csv") as file_in:
-    reader = csv.reader(file_in)
-    lines = []
-    for row in reader:
-        line = row[0] + " " + row[1] + " " + row[2]
-        lines.append(line)
-    
-HTMLtable(lines,type_sort)
+HTMLtable(type_sort)
 
 
 # create form that user can fill temperature
