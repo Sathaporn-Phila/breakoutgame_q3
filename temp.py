@@ -65,17 +65,18 @@ if form.getvalue("name"):
     
 
 type_sort = form.getvalue("sort")
-# This block show information on browser
-HTMLtable(type_sort)
-
 
 # create form that user can fill temperature
 print("<form method='post' action='temp.py'>") 
 print("<p>NUM: <input type='text' name='name'></p>")
 print("<input type='radio' name='sort' value='non-reverse'>")
-print("<label for='non-reverse'>Non-reverse</label>")
+print("<label for='non-reverse'>Min-Max</label>")
 print("<input type='radio' name='sort' value='reverse'>")
-print("<label for='reverse'>reverse</label>")  
+print("<label for='reverse'>Max-Min</label>")  
 print("<input type='submit' value='Submit'>") 
 print("</form>")
-print("</body></html>") 
+
+# This block show information on browser
+HTMLtable(type_sort)
+
+print("</body></html>")   
