@@ -1,7 +1,7 @@
 #!/usr/bin/python3 
 # Importing the 'cgi' module 
 
-import cgi
+import cgi,csv
 from time import localtime 
 
 # function for create table and fill informations
@@ -58,17 +58,21 @@ if form.getvalue("name"):
     name = form.getvalue("name") 
 
 # This block write file that contain day/month/year hour/miniute/second temperature
-    f = open("demofile2.txt", "a")
-    f.write(day+" "+time+" "+name+ "\n")
-    f.close()
+    with open("demofile2.csv", "a") as f:
+        writer = csv.writer(f) 
+        writer.writerow([day , time , name])
+    
 
 type_sort = form.getvalue("sort")
 # This block show information on browser
 
-with open("demofile2.txt") as file_in:
+with open("demofile2.csv") as file_in:
+    reader = csv.reader(file_in)
     lines = []
-    for line in file_in:
+    for row in reader:
+        line = row[0] + " " + row[1] + " " + row[2]
         lines.append(line)
+    
 HTMLtable(lines,type_sort)
 
 
