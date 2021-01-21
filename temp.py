@@ -32,6 +32,8 @@ def get_key(val,dic):
     for key, value in dic.items():
         if val == value:
             return key
+    
+
 # This block setting style of table and show Hello Program!
 print("Content-type: text/html\r\n\r\n") 
 print("<html>")
@@ -60,18 +62,16 @@ if form.getvalue("name"):
 
 type_sort = form.getvalue("sort")
 # This block show information on browser
-f = open("demofile2.txt", "r")
-data_temp = f.read()
-print("<pre>"+data_temp+"</pre><br>") 
+
 with open("demofile2.txt") as file_in:
     lines = []
     for line in file_in:
         lines.append(line)
 HTMLtable(lines,type_sort)
-f.close()
+
 
 # create form that user can fill temperature
-print("<form method='post' action='temp2.py'>") 
+print("<form method='post' action='temp.py'>") 
 print("<p>NUM: <input type='text' name='name'></p>")
 print("<input type='radio' name='sort' value='non-reverse'>")
 print("<label for='non-reverse'>Non-reverse</label>")
