@@ -27,6 +27,7 @@
     var paddleHeight = 10;
     var paddleWidth = 75;
     var paddleX = (canvas.width-paddleWidth)/2;
+    var lives = 3;
 
 //brick variable
     var brickRowCount = 3;
@@ -136,12 +137,18 @@
         ctx.fillStyle = "#0095DD";
         ctx.fillText("Score: "+score, 8, 20);
     }
+    function drawLives() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#0095DD";
+        ctx.fillText("Lives: "+lives, canvas.width-65, 20);
+    }
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawBricks();
         drawBall();
         drawPaddle();
         drawScore();
+        drawLives();
         collisionDetection();
 
         if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {//border y-axis
@@ -153,9 +160,19 @@
             if(x > paddleX && x < paddleX + paddleWidth) {
                 dy = -dy;
         }else {
-        alert("GAME OVER");
-        document.location.reload();
-        clearInterval(interval);
+            lives--;
+            if(!lives) {
+                alert("GAME OVER");
+                document.location.reload();
+                clearInterval(interval); // Needed for Chrome to end game
+                }
+            else {
+                x = canvas.width/2;
+                y = canvas.height-30;
+                dx = 2;
+                dy = -2;
+                paddleX = (canvas.width-paddleWidth)/2;
+                }
         }
     }
         
