@@ -1,0 +1,63 @@
+<html>
+<body>
+<script>
+    class World{
+        constuctor(ro,co){
+            this.ball = [];
+            this.brick = [];
+            this.paddle =[];
+            this.brickRow = ro;
+            this.brickColumn = co;
+            this.inputProcessor = new InputProcessor();
+            this.live;
+        }
+        draw(){}
+        update(){}
+        collisionDetection(){}
+    }
+    class Ball{
+        constuctor(){
+            this.x;
+            this.y;
+            this.speedX;
+            this.speedY;
+        }
+        draw(){}
+        move(){}
+        bounceX(){}
+        bounceY(){}
+    }
+    class Brick{
+        constuctor(){
+            this.x;
+            this.y;
+            this.offsetY;
+            this.offsetX;
+            this.width;
+            this.height;
+            this.status;
+        }
+        draw(){}
+    }
+    class Paddle(){
+        constuctor(){
+            this.x;
+            this.y;
+            this.speed;
+        }
+        draw(){}
+        move(){}
+    }
+    class InputProcessor{
+        constuctor(left, right){
+            this.keyLeft = left;
+            this.keyRight = right;
+        }
+        keyUpHandler(){}
+        keyDownHandler(){}
+        mouseMoveHandler(){}
+
+    }
+</script>
+</body>
+</html>
