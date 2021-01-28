@@ -23,7 +23,7 @@
     var dx = 2;
     var dy = -2;
 
-//paddle variable
+//paddle variable , player
     var paddleHeight = 10;
     var paddleWidth = 75;
     var paddleX = (canvas.width-paddleWidth)/2;
@@ -40,7 +40,7 @@
 //add score variable
     var score = 0;
     var bricks = [];
-// set brick row and column and it display when status is 1
+// //สร้าง brick ตามแนว row และ column
     for (var c = 0; c < brickColumnCount; c++) {
         bricks[c] = [];
         for (var r = 0; r < brickRowCount; r++) {
@@ -51,14 +51,13 @@
     var rightPressed = false;
     var leftPressed = false;
 
-    //var interval = setInterval(draw, 10); replace draw()
-    draw();
+    draw(); // Replace var interval = setInterval(draw, 10)
 
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
-    document.addEventListener("mousemove", mouseMoveHandler, false);
-
-    function keyDownHandler(e) {
+    document.addEventListener("mousemove", mouseMoveHandler, false); // event for mouse control  
+    
+    function keyDownHandler(e) {//press right or left arrow that will move a paddle
         if(e.key == "Right" || e.key == "ArrowRight") {
             rightPressed = true;
         }
@@ -67,7 +66,7 @@
         }
     }
 
-    function keyUpHandler(e) {//Press down
+    function keyUpHandler(e) {//release button will stop paddle move 
         if(e.key == "Right" || e.key == "ArrowRight") {
             rightPressed = false;
         }
@@ -75,51 +74,57 @@
             leftPressed = false;
         }
     }
-    function mouseMoveHandler(e) {
-    var relativeX = e.clientX - canvas.offsetLeft;
+
+    function mouseMoveHandler(e) {  //event  mouse control when mouse move
+    var relativeX = e.clientX - canvas.offsetLeft;// หาพิกัดเเกน X ของจอ
+/* e.clientX คือ ระยะหว่างขอบด้านซ้ายของ browser ไปถึง mouse pointer
+canvas.offsetLeft คือ ระยะระหว่างขอบด้านซ้ายของ browser ไปถึงระยะขอบด้านซ้ายของ canvas */
+
     if(relativeX > 0 && relativeX < canvas.width) {
         paddleX = relativeX - paddleWidth/2;
     }
-}
+} 
     //check collision if it is founded , change status to zero and plus score
     function collisionDetection() {
         for(var c=0; c<brickColumnCount; c++) {
             for(var r=0; r<brickRowCount; r++) {
                 var b = bricks[c][r];
                 if(b.status == 1) {
-                    if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+                    if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {//if the ball overlapped with the brick
+
                         dy = -dy;
                         b.status = 0;
                         score++;
+                    //check if you reach max score will show “you win”       
                         if(score == brickRowCount*brickColumnCount) {
                             alert("YOU WIN, CONGRATULATIONS!");
                             document.location.reload();
-                            //clearInterval(interval); // Needed for Chrome to end game
+                            // clearInterval(interval); comment for Improving rendering with requestAnimationFrame()
                         }
                     }
                 }
             }
         }
     }
-    function drawBall() {
+    function drawBall() {//draw ball using arc method
         ctx.beginPath();
         ctx.arc(x, y, ballRadius, 0, Math.PI*2);
         ctx.fillStyle = "#0095DD";
         ctx.fill();
         ctx.closePath();
     }
-    function drawPaddle() {
+    function drawPaddle() {// draw paddle by using rect method
         ctx.beginPath();
         ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
-        ctx.fillStyle = "#0095DD";
+        ctx.fillStyle = "#0095DD";  // fill color
         ctx.fill();
         ctx.closePath();
     }
-    //draw brick when status is 1
+    // //สร้าง brick
     function drawBricks() {
         for (var c = 0; c < brickColumnCount; c++) {
             for (var r = 0; r < brickRowCount; r++) {
-                if (bricks[c][r].status == 1) {
+                if (bricks[c][r].status == 1) {//ถ้า brick ยังไม่ถูกทำลาย ก็จะทำการสร้าง brick
                     var brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft;
                     var brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
                     bricks[c][r].x = brickX;
@@ -133,17 +138,20 @@
             }
         }
     }
-    function drawScore() {
+
+
+
+    function drawScore() { //แสดงคะแนนที่ brick ถูกทำลายไป
         ctx.font = "16px Arial";
         ctx.fillStyle = "#0095DD";
         ctx.fillText("Score: "+score, 8, 20);
     }
-    function drawLives() {
-        ctx.font = "16px Arial";
-        ctx.fillStyle = "#0095DD";
-        ctx.fillText("Lives: "+lives, canvas.width-65, 20);
+    function drawLives() {//เเสดงชีวิตที่เหลืออยู่ของ player
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Lives: "+lives, canvas.width-65, 20);
     }
-    function draw() {
+    function draw() { //draw obj in game 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawBricks();
         drawBall();
@@ -152,49 +160,50 @@
         drawLives();
         collisionDetection();
 
-        if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {//border y-axis
+        if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {//ชนขอบข้างแล้วกระดอนบอล
             dx = -dx;
         }
-        if(y + dy < ballRadius) {
-            dy = -dy;
-        } else if(y + dy > canvas.height-ballRadius) {
-            if(x > paddleX && x < paddleX + paddleWidth) {
-                dy = -dy;
-        }else {
+        if(y + dy < ballRadius) {//ถ้าลูกบอลชนขอบบน
+            dy = -dy;// bounce ลูกบอล
+        } else if(y + dy > canvas.height-ballRadius) {//ถ้าลูกบอลชนขอบล่าง
+            if(x > paddleX && x < paddleX + paddleWidth) {//ถ้า ลูกบอลชน paddle
+                dy = -dy;//เด้งลูกบอล
+        }else { // เมื่อรับบอลไม่ได้ชีวิตลด 1 หน่วย
             lives--;
-            if(!lives) {
+            if(lives === 0) {// ถ้าชีวิตเหลือ 0 จะ แจ้งเตือน "GAME OVER" และเริ่มเกมใหม่
                 alert("GAME OVER");
                 document.location.reload();
-                clearInterval(interval); // Needed for Chrome to end game
-                }
-            else {
-                x = canvas.width/2;
-                y = canvas.height-30;
-                dx = 2;
-                dy = -2;
-                paddleX = (canvas.width-paddleWidth)/2;
-                }
+            }
+            else {// ถ้าชีวิตไม่เท่ากับ 0 
+                x = canvas.width/2; //ลูกบอลจะมาอยู่ตรงกลาง
+                y = canvas.height-30; //ลูกบอลจะมาอยู่ตรงกลาง
+                dx = 3;
+                dy = -3;
+                paddleX = (canvas.width-paddleWidth)/2;//paddle จะมาอยู่ตรงกลาง
+            }
         }
     }
         
-        if(rightPressed) {
+        if(rightPressed) {//เมื่อกดปุ่มขวา paddle จะเคลื่อนที่ไปทางขวา
             paddleX += 7;
-            if (paddleX + paddleWidth > canvas.width){
+            if (paddleX + paddleWidth > canvas.width){//เมื่อ paddle ชนกับขอบขวา
                 paddleX = canvas.width - paddleWidth;
             }
         }
-        else if(leftPressed) {
+        else if(leftPressed) {//เมื่อกดปุ่มซ้าย paddle จะเคลื่อนไปทางซ้าย
             paddleX -= 7;
-            if (paddleX < 0){
+            if (paddleX < 0){//เมื่อ paddle ชนกับขอบซ้าย
                 paddleX = 0;
             }
         }       
         x += dx;
         y += dy;
-        requestAnimationFrame(draw);
+
+        requestAnimationFrame(draw);// เวลาอนิเมชั่น 10 ms / 1 เฟรม
     }
     
 
 </script>
 
 </body>
+</html>
