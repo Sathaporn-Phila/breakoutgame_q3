@@ -39,15 +39,22 @@
     }
     class Brick{
         constructor(){
-            this.x;
-            this.y;
-            this.offsetY;
-            this.offsetX;
-            this.width;
-            this.height;
-            this.status;
+            this.x =0;
+            this.y =0;
+            this.offsetY =30;
+            this.offsetX =30;
+            this.width =75;
+            this.height =20;
+            this.brickPadding = 10;
+            this.status =1;
         }
-        draw(){}
+        draw(){
+            document.getElementById("myCanvas").getContext("2d").beginPath();
+            document.getElementById("myCanvas").getContext("2d").rect(this.x, this.y, this.width, this.height);
+            document.getElementById("myCanvas").getContext("2d").fillStyle = "#0095DD";
+            document.getElementById("myCanvas").getContext("2d").fill();
+            document.getElementById("myCanvas").getContext("2d").closePath();
+        }
     }
     class Paddle{
         constructor(){
@@ -94,28 +101,46 @@
             }
         }
         mouseMoveHandler(key){
-            
+
         }
     }
     class World{
-        constructor(ro,co){
+        constructor(r,c){
             this.canvas = document.getElementById("myCanvas");
             this.ctx = this.canvas.getContext("2d");
             this.ball = new Ball(this.canvas.width/2,this.canvas.height/2);
             this.brick = [];
             this.paddle = new Paddle();
-            this.brickRow = ro;
-            this.brickColumn = co;
+            this.row = r;
+            this.column = c;
             this.inputProcessor = new InputProcessor();
             this.live; 
             var _this = this;
             this.interval = setInterval(function () { _this.update(); },10);   
+
+            for(var c =0; c<this.column;c++){
+                this.brick[c] = [];
+                for(var r=0; r<this.row;r++){
+                    this.brick[c][r] = new Brick();
+                }
+            }
+            console.log(this.brick);
         }
         update(){
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.ball.draw();
             this.ball.move();
             this.paddle.draw();
+
+            for(var c =0; c<this.column;c++){
+                for(var r=0; r<this.row;r++){
+                    this.brick[c][r].x = (c*(this.brick[c][r].width+this.brick[c][r].brickPadding))+this.brick[c][r].offsetX;
+                    this.brick[c][r].y = (r*(this.brick[c][r].height+this.brick[c][r].brickPadding)) + this.brick[c][r].offsetY;
+
+                    this.brick[c][r].draw();
+                }
+            }
+
             if(this.ball.x + this.ball.speedX > this.canvas.width-this.ball.Radius || this.ball.x + this.ball.speedX  < this.ball.Radius) {
                 this.ball.bounceX();
             }
@@ -129,7 +154,7 @@
                     document.location.reload();
                     clearInterval(this.interval); // Needed for Chrome to end game
                 }
-                
+
             }
             if(this.inputProcessor.keyLeft && this.paddle.paddleX < this.canvas.width-this.paddle.paddleWidth) {
                 this.paddle.paddleX += 7;
@@ -140,12 +165,11 @@
         }
         collisionDetection(){}
     }
-
-var w = new World(2,2);
+var w = new World(3,5);
 function run() {
     w.update();
 }
 
 </script>
 </body>
-</html>
+</html> 
