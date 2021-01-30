@@ -1,52 +1,34 @@
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Gamedev Canvas Workshop</title>
-        <style>
-            * { padding: 0; margin: 0; }
-            canvas { background: #eee; display: block; margin: 0 auto; }
-        </style>
-    </head>
+<head>
+    <meta charset="utf-8" />
+    <title>Break out Game</title>
+    <style>
+    	* { padding: 0; margin: 0; }
+    	canvas { background: #eee; display: block; margin: 0 auto; }
+    </style>
+</head>
 <body>
-    <canvas id="myCanvas" width="480" height="320"></canvas>
+<canvas id="myCanvas" width="480" height="320"></canvas>
 <script>
-    class World{
-        constructor(ro,co){
-            // add canvas attribute เพื่อลด globel var
-            this.canvas = document.getElementById("myCanvas");
-            this.ctx = this.canvas.getContext("2d");
-            this.ball = new Ball();
-            this.brick = [];
-            this.paddle =[];
-            this.brickRow = ro;
-            this.brickColumn = co;
-            this.inputProcessor = new InputProcessor();
-            this.live;
-        }
-        draw(){
-            this.ball.draw();
-        }
-        update(){}
-        collisionDetection(){}
-    }
     class Ball{
-        constructor(){
-            // add canvas attribute เพื่อลด globel var
-            this.canvas = document.getElementById("myCanvas");
-            this.ctx = this.canvas.getContext("2d");
-            this.x = this.canvas.width/2;
-            this.y = this.canvas.height-30;
+        constructor(tmpx, tmpy){
+            this.x = tmpx;
+            this.y = tmpy;
             this.speedX = 2;
             this.speedY = -2;
         }
         draw(){
-            this.ctx.beginPath();
-            this.ctx.arc(this.x, this.y, 10, 0, Math.PI*2);
-            this.ctx.fillStyle = "#0095DD";
-            this.ctx.fill();
-            this.ctx.closePath();
+            document.getElementById("myCanvas").getContext("2d").beginPath();
+            document.getElementById("myCanvas").getContext("2d").arc(this.x, this.y, 10, 0, Math.PI*2);
+            document.getElementById("myCanvas").getContext("2d").fillStyle = "#0095DD";
+            document.getElementById("myCanvas").getContext("2d").fill();
+            document.getElementById("myCanvas").getContext("2d").closePath();
+
         }
-        move(){}
+        move(){
+            this.x += this.speedX;
+            this.y += this.speedY;
+        }
         bounceX(){}
         bounceY(){}
     }
@@ -79,14 +61,35 @@
         keyUpHandler(){}
         keyDownHandler(){}
         mouseMoveHandler(){}
+
     }
 
-    var world = new World();
-    function run(){
-        world.draw();
-        console.log(true);
+    class World{
+        constructor(ro,co){
+            this.canvas = document.getElementById("myCanvas");
+            this.ctx = this.canvas.getContext("2d");
+            
+            this.ball = new Ball(this.canvas.width/2,this.canvas.height/2);
+            this.brick = [];
+            this.paddle =[];
+            this.brickRow = ro;
+            this.brickColumn = co;
+            this.inputProcessor = new InputProcessor();
+            this.live;
+        }
+        update(){
+            this.ball.draw();
+            this.ball.move();
+        }
+        collisionDetection(){}
     }
-    setInterval(run,10)
+
+var w = new World(2,2);
+function run() {
+    w.update();
+    console.log("hi")
+}
+setInterval(run, 10);
 </script>
 </body>
 </html>
