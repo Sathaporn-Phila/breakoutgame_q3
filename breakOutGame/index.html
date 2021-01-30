@@ -104,6 +104,18 @@
 
         }
     }
+    class Score {
+        constructor(){
+            this.score = 0;
+            this.canvas = document.getElementById("myCanvas");
+            this.ctx = this.canvas.getContext("2d");
+        }
+        draw(){
+            this.ctx.font = "16px Arial";
+            this.ctx.fillStyle = "#0095DD";
+            this.ctx.fillText("Score: "+this.score, 8, 20);
+        }
+    }
     class World{
         constructor(r,c){
             this.canvas = document.getElementById("myCanvas");
@@ -111,6 +123,7 @@
             this.ball = new Ball(this.canvas.width/2,this.canvas.height/2);
             this.brick = [];
             this.paddle = new Paddle();
+            this.scoreDisplay = new Score();
             this.row = r;
             this.column = c;
             this.inputProcessor = new InputProcessor();
@@ -144,6 +157,7 @@
             this.paddle.draw();
             this.drawBricks();
             this.collisionDetection();
+            this.scoreDisplay.draw();
 
             if(this.ball.x + this.ball.speedX > this.canvas.width-this.ball.Radius || this.ball.x + this.ball.speedX  < this.ball.Radius) {
                 this.ball.bounceX();
@@ -175,6 +189,12 @@
                         if(this.ball.x > this.brickBlock.x && this.ball.x < this.brickBlock.x+this.brickBlock.width && this.ball.y > this.brickBlock.y && this.ball.y < this.brickBlock.y+this.brickBlock.height) {
                             this.ball.speedY = -this.ball.speedY;
                             this.brickBlock.status = 0;
+                            this.scoreDisplay.score++
+                            if(this.scoreDisplay.score == this.row*this.column) {
+                                alert("YOU WIN, CONGRATULATIONS!");
+                                document.location.reload();
+                                clearInterval(this.interval); // Needed for Chrome to end game
+                    }
                         }
                     }
                 }
