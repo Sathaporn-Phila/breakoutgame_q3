@@ -126,20 +126,24 @@
             }
             console.log(this.brick);
         }
+        drawBricks(){
+            for(var c =0; c<this.column;c++){
+                for(var r=0; r<this.row;r++){
+                    if(this.brick[c][r].status == 1) {
+                        this.brick[c][r].x = (c*(this.brick[c][r].width+this.brick[c][r].brickPadding))+this.brick[c][r].offsetX;
+                        this.brick[c][r].y = (r*(this.brick[c][r].height+this.brick[c][r].brickPadding)) + this.brick[c][r].offsetY;
+                        this.brick[c][r].draw();
+                    }
+                }
+            }
+        }
         update(){
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.ball.draw();
             this.ball.move();
             this.paddle.draw();
-
-            for(var c =0; c<this.column;c++){
-                for(var r=0; r<this.row;r++){
-                    this.brick[c][r].x = (c*(this.brick[c][r].width+this.brick[c][r].brickPadding))+this.brick[c][r].offsetX;
-                    this.brick[c][r].y = (r*(this.brick[c][r].height+this.brick[c][r].brickPadding)) + this.brick[c][r].offsetY;
-
-                    this.brick[c][r].draw();
-                }
-            }
+            this.drawBricks();
+            this.collisionDetection();
 
             if(this.ball.x + this.ball.speedX > this.canvas.width-this.ball.Radius || this.ball.x + this.ball.speedX  < this.ball.Radius) {
                 this.ball.bounceX();
@@ -157,13 +161,25 @@
 
             }
             if(this.inputProcessor.keyLeft && this.paddle.paddleX < this.canvas.width-this.paddle.paddleWidth) {
-                this.paddle.paddleX += 7;
+                this.paddle.paddleX += this.paddle.speedX;
             }
             else if(this.inputProcessor.keyRight && this.paddle.paddleX > 0) {
-                this.paddle.paddleX -= 7;
+                this.paddle.paddleX -= this.paddle.speedX;
             }
         }
-        collisionDetection(){}
+        collisionDetection(){
+            for(var c=0; c<this.column; c++) {
+                for(var r=0; r<this.row; r++) {
+                    this.brickBlock = this.brick[c][r];
+                    if(this.brickBlock.status == 1) {
+                        if(this.ball.x > this.brickBlock.x && this.ball.x < this.brickBlock.x+this.brickBlock.width && this.ball.y > this.brickBlock.y && this.ball.y < this.brickBlock.y+this.brickBlock.height) {
+                            this.ball.speedY = -this.ball.speedY;
+                            this.brickBlock.status = 0;
+                        }
+                    }
+                }
+            }
+        }
     }
 var w = new World(3,5);
 function run() {
