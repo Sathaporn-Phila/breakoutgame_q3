@@ -16,6 +16,7 @@
             this.y = tmpy;
             this.speedX = 2;
             this.speedY = -2;
+            this.Radius = 10;
         }
         draw(){
             document.getElementById("myCanvas").getContext("2d").beginPath();
@@ -23,14 +24,18 @@
             document.getElementById("myCanvas").getContext("2d").fillStyle = "#0095DD";
             document.getElementById("myCanvas").getContext("2d").fill();
             document.getElementById("myCanvas").getContext("2d").closePath();
-
+            
         }
         move(){
             this.x += this.speedX;
             this.y += this.speedY;
         }
-        bounceX(){}
-        bounceY(){}
+        bounceX(){
+            this.speedX = -this.speedX;
+        }
+        bounceY(){
+            this.speedY =-this.speedY;
+        }
     }
     class Brick{
         constructor(){
@@ -80,8 +85,14 @@
         update(){
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.ball.draw();
-
             this.ball.move();
+
+            if(this.ball.x + this.ball.speedX > this.canvas.width-this.ball.Radius || this.ball.x + this.ball.speedX  < this.ball.Radius) {
+                this.ball.bounceX();
+            }
+            if(this.ball.y + this.ball.speedY > this.canvas.height-this.ball.Radius || this.ball.y + this.ball.speedY < this.ball.Radius) {
+                this.ball.bounceY();
+            }
         }
         collisionDetection(){}
     }
