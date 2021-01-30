@@ -51,47 +51,83 @@
     }
     class Paddle{
         constructor(){
-            this.x;
-            this.y;
-            this.speed;
+            this.canvas = document.getElementById("myCanvas");
+            this.ctx = this.canvas.getContext("2d");
+            this.width = this.canvas.width;
+            this.height = this.canvas.height;
+            this.paddleHeight = 10;
+            this.paddleWidth = 75;
+            this.paddleX = (this.width-this.paddleWidth)/2;
+            this.speedX = 7;
         }
-        draw(){}
-        move(){}
+        draw(){
+            this.ctx.beginPath()
+            this.ctx.rect(this.paddleX,this.height-this.paddleHeight,this.paddleWidth,this.paddleHeight)
+            this.ctx.fillStyle = "#0095DD";
+            this.ctx.fill();
+            this.ctx.closePath();
+        }
     }
     class InputProcessor{
-        constructor(left, right){
-            this.keyLeft = left;
-            this.keyRight = right;
+        constructor(){
+            this.keyLeft = false;
+            this.keyRight = false;
+            var _this = this;
+            document.onkeydown = function(event){_this.pushDown(event.which)}
+            document.onkeyup = function(event){_this.pushUp(event.which)}
         }
-        keyUpHandler(){}
-        keyDownHandler(){}
+        pushDown(key){
+            if(key == 37){
+                this.keyRight = true;
+            }
+            else if(key == 39){
+                this.keyLeft = true;
+            }
+        }
+        pushUp(key){
+            if(key == 37){
+                this.keyRight = false;
+            }
+            else if(key == 39){
+                this.keyLeft = false;
+            }
+        }
         mouseMoveHandler(){}
-
     }
-
     class World{
         constructor(ro,co){
             this.canvas = document.getElementById("myCanvas");
             this.ctx = this.canvas.getContext("2d");
-            
             this.ball = new Ball(this.canvas.width/2,this.canvas.height/2);
             this.brick = [];
-            this.paddle =[];
+            this.paddle = new Paddle();
             this.brickRow = ro;
             this.brickColumn = co;
             this.inputProcessor = new InputProcessor();
-            this.live;
+            this.live;        
         }
         update(){
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.ball.draw();
             this.ball.move();
-
+            this.paddle.draw();
             if(this.ball.x + this.ball.speedX > this.canvas.width-this.ball.Radius || this.ball.x + this.ball.speedX  < this.ball.Radius) {
                 this.ball.bounceX();
             }
             if(this.ball.y + this.ball.speedY > this.canvas.height-this.ball.Radius || this.ball.y + this.ball.speedY < this.ball.Radius) {
                 this.ball.bounceY();
+            }
+            if(this.inputProcessor.keyLeft) {
+                this.paddle.paddleX += 7;
+                if (this.paddle.paddleX + this.paddle.paddleWidth > this.canvas.width){
+                    this.paddle.paddleX = this.canvas.width - this.paddle.paddleWidth;
+                }
+            }
+            else if(this.inputProcessor.keyRight) {
+                this.paddle.paddleX -= 7;
+                if (this.paddleX < 0){
+                    this.paddle.paddleX = 0;
+                }
             }
         }
         collisionDetection(){}
@@ -100,7 +136,6 @@
 var w = new World(2,2);
 function run() {
     w.update();
-    console.log("hi")
 }
 setInterval(run, 10);
 </script>
