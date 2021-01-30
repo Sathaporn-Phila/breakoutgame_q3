@@ -74,15 +74,22 @@
             this.ctx.fill();
             this.ctx.closePath();
         }
+        checkMouseRelative(relativeX){
+            if(relativeX > 0 && relativeX < this.canvas.width) {
+                    this.paddleX = relativeX - this.paddleWidth/2;
+            }
+        }
     }
     class InputProcessor{
         constructor(){
+            this.relativeX = 0;
             this.keyLeft = false;
             this.keyRight = false;
+            this.canvas = document.getElementById("myCanvas");
             var _this = this;
             document.onkeydown = function(event){_this.pushDown(event.which)}
             document.onkeyup = function(event){_this.pushUp(event.which)}
-            document.onmousemove = function(event){_this.pushUp(event.which)}
+            document.onmousemove = function(event){_this.mouseMoveHandler(event)}
         }
         pushDown(key){
             if(key == 37){
@@ -100,8 +107,8 @@
                 this.keyLeft = false;
             }
         }
-        mouseMoveHandler(key){
-
+        mouseMoveHandler(e){
+            this.relativeX = e.clientX - this.canvas.offsetLeft;
         }
     }
     class Score {
@@ -155,9 +162,11 @@
             this.ball.draw();
             this.ball.move();
             this.paddle.draw();
+            this.paddle.checkMouseRelative(this.inputProcessor.relativeX);
             this.drawBricks();
             this.collisionDetection();
             this.scoreDisplay.draw();
+
 
             if(this.ball.x + this.ball.speedX > this.canvas.width-this.ball.Radius || this.ball.x + this.ball.speedX  < this.ball.Radius) {
                 this.ball.bounceX();
