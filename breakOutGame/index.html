@@ -20,7 +20,7 @@
         }
         draw(){
             document.getElementById("myCanvas").getContext("2d").beginPath();
-            document.getElementById("myCanvas").getContext("2d").arc(this.x, this.y, 10, 0, Math.PI*2);
+            document.getElementById("myCanvas").getContext("2d").arc(this.x, this.y, this.Radius, 0, Math.PI*2);
             document.getElementById("myCanvas").getContext("2d").fillStyle = "#0095DD";
             document.getElementById("myCanvas").getContext("2d").fill();
             document.getElementById("myCanvas").getContext("2d").closePath();
@@ -75,6 +75,7 @@
             var _this = this;
             document.onkeydown = function(event){_this.pushDown(event.which)}
             document.onkeyup = function(event){_this.pushUp(event.which)}
+            document.onmousemove = function(event){_this.pushUp(event.which)}
         }
         pushDown(key){
             if(key == 37){
@@ -92,7 +93,9 @@
                 this.keyLeft = false;
             }
         }
-        mouseMoveHandler(){}
+        mouseMoveHandler(key){
+            
+        }
     }
     class World{
         constructor(ro,co){
@@ -104,7 +107,9 @@
             this.brickRow = ro;
             this.brickColumn = co;
             this.inputProcessor = new InputProcessor();
-            this.live;        
+            this.live; 
+            var _this = this;
+            this.interval = setInterval(function () { _this.update(); },10);   
         }
         update(){
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -114,20 +119,23 @@
             if(this.ball.x + this.ball.speedX > this.canvas.width-this.ball.Radius || this.ball.x + this.ball.speedX  < this.ball.Radius) {
                 this.ball.bounceX();
             }
-            if(this.ball.y + this.ball.speedY > this.canvas.height-this.ball.Radius || this.ball.y + this.ball.speedY < this.ball.Radius) {
+            if(this.ball.y + this.ball.speedY < this.ball.Radius) {
                 this.ball.bounceY();
+            }else if(this.ball.y + this.ball.speedY > this.canvas.height-this.ball.Radius){
+                if( this.ball.x > this.paddle.paddleX && this.ball.x < this.paddle.paddleX + this.paddle.paddleWidth){
+                    this.ball.bounceY();
+                }else{
+                    alert("GAME OVER");
+                    document.location.reload();
+                    clearInterval(this.interval); // Needed for Chrome to end game
+                }
+                
             }
-            if(this.inputProcessor.keyLeft) {
+            if(this.inputProcessor.keyLeft && this.paddle.paddleX < this.canvas.width-this.paddle.paddleWidth) {
                 this.paddle.paddleX += 7;
-                if (this.paddle.paddleX + this.paddle.paddleWidth > this.canvas.width){
-                    this.paddle.paddleX = this.canvas.width - this.paddle.paddleWidth;
-                }
             }
-            else if(this.inputProcessor.keyRight) {
+            else if(this.inputProcessor.keyRight && this.paddle.paddleX > 0) {
                 this.paddle.paddleX -= 7;
-                if (this.paddleX < 0){
-                    this.paddle.paddleX = 0;
-                }
             }
         }
         collisionDetection(){}
@@ -137,7 +145,7 @@ var w = new World(2,2);
 function run() {
     w.update();
 }
-setInterval(run, 10);
+
 </script>
 </body>
 </html>
