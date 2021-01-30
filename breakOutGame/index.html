@@ -1,9 +1,21 @@
 <html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Gamedev Canvas Workshop</title>
+        <style>
+            * { padding: 0; margin: 0; }
+            canvas { background: #eee; display: block; margin: 0 auto; }
+        </style>
+    </head>
 <body>
+    <canvas id="myCanvas" width="480" height="320"></canvas>
 <script>
     class World{
-        constuctor(ro,co){
-            this.ball = [];
+        constructor(ro,co){
+            // add canvas attribute เพื่อลด globel var
+            this.canvas = document.getElementById("myCanvas");
+            this.ctx = this.canvas.getContext("2d");
+            this.ball = new Ball();
             this.brick = [];
             this.paddle =[];
             this.brickRow = ro;
@@ -11,24 +23,35 @@
             this.inputProcessor = new InputProcessor();
             this.live;
         }
-        draw(){}
+        draw(){
+            this.ball.draw();
+        }
         update(){}
         collisionDetection(){}
     }
     class Ball{
-        constuctor(){
-            this.x;
-            this.y;
-            this.speedX;
-            this.speedY;
+        constructor(){
+            // add canvas attribute เพื่อลด globel var
+            this.canvas = document.getElementById("myCanvas");
+            this.ctx = this.canvas.getContext("2d");
+            this.x = this.canvas.width/2;
+            this.y = this.canvas.height-30;
+            this.speedX = 2;
+            this.speedY = -2;
         }
-        draw(){}
+        draw(){
+            this.ctx.beginPath();
+            this.ctx.arc(this.x, this.y, 10, 0, Math.PI*2);
+            this.ctx.fillStyle = "#0095DD";
+            this.ctx.fill();
+            this.ctx.closePath();
+        }
         move(){}
         bounceX(){}
         bounceY(){}
     }
     class Brick{
-        constuctor(){
+        constructor(){
             this.x;
             this.y;
             this.offsetY;
@@ -39,8 +62,8 @@
         }
         draw(){}
     }
-    class Paddle(){
-        constuctor(){
+    class Paddle{
+        constructor(){
             this.x;
             this.y;
             this.speed;
@@ -49,15 +72,21 @@
         move(){}
     }
     class InputProcessor{
-        constuctor(left, right){
+        constructor(left, right){
             this.keyLeft = left;
             this.keyRight = right;
         }
         keyUpHandler(){}
         keyDownHandler(){}
         mouseMoveHandler(){}
-
     }
+
+    var world = new World();
+    function run(){
+        world.draw();
+        console.log(true);
+    }
+    setInterval(run,10)
 </script>
 </body>
 </html>
