@@ -111,18 +111,6 @@
             this.relativeX = e.clientX - this.canvas.offsetLeft;
         }
     }
-    class Score {
-        constructor(){
-            this.score = 0;
-            this.canvas = document.getElementById("myCanvas");
-            this.ctx = this.canvas.getContext("2d");
-        }
-        draw(){
-            this.ctx.font = "16px Arial";
-            this.ctx.fillStyle = "#0095DD";
-            this.ctx.fillText("Score: "+this.score, 8, 20);
-        }
-    }
     class World{
         constructor(r,c){
             this.canvas = document.getElementById("myCanvas");
@@ -130,11 +118,11 @@
             this.ball = new Ball(this.canvas.width/2,this.canvas.height/2);
             this.brick = [];
             this.paddle = new Paddle();
-            this.scoreDisplay = new Score();
             this.row = r;
             this.column = c;
             this.inputProcessor = new InputProcessor();
-            this.live; 
+            this.live = 3;
+            this.score = 0; 
             var _this = this;
             this.interval = setInterval(function () { _this.update(); },10);   
 
@@ -157,6 +145,16 @@
                 }
             }
         }
+        drawLives(){
+            this.ctx.font = "16px Arial";
+            this.ctx.fillStyle = "#0095DD";
+            this.ctx.fillText("Lives: "+this.live, this.canvas.width-65, 20);
+        }
+        drawScore(){
+            this.ctx.font = "16px Arial";
+            this.ctx.fillStyle = "#0095DD";
+            this.ctx.fillText("Score: "+this.score, 8, 20);
+        }
         update(){
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.ball.draw();
@@ -165,8 +163,8 @@
             this.paddle.checkMouseRelative(this.inputProcessor.relativeX);
             this.drawBricks();
             this.collisionDetection();
-            this.scoreDisplay.draw();
-
+            this.drawScore();
+            this.drawLives();
 
             if(this.ball.x + this.ball.speedX > this.canvas.width-this.ball.Radius || this.ball.x + this.ball.speedX  < this.ball.Radius) {
                 this.ball.bounceX();
@@ -177,9 +175,19 @@
                 if( this.ball.x > this.paddle.paddleX && this.ball.x < this.paddle.paddleX + this.paddle.paddleWidth){
                     this.ball.bounceY();
                 }else{
-                    alert("GAME OVER");
-                    document.location.reload();
-                    clearInterval(this.interval); // Needed for Chrome to end game
+                    this.live --;
+                    if(this.live === 0){
+                        alert("GAME OVER");
+                        document.location.reload();
+                        clearInterval(this.interval); // Needed for Chrome to end game
+                    }else{
+                        this.ball.x = this.canvas.width/2;
+                        this.ball.y = this.canvas.height/2;
+                        this.ball.speedX = 2;
+                        this.ball.speedY = -2;
+                        this.paddle.paddleX = (this.canvas.width-this.paddle.paddleWidth)/2;
+                    }
+                    
                 }
 
             }
@@ -198,8 +206,8 @@
                         if(this.ball.x > this.brickBlock.x && this.ball.x < this.brickBlock.x+this.brickBlock.width && this.ball.y > this.brickBlock.y && this.ball.y < this.brickBlock.y+this.brickBlock.height) {
                             this.ball.speedY = -this.ball.speedY;
                             this.brickBlock.status = 0;
-                            this.scoreDisplay.score++
-                            if(this.scoreDisplay.score == this.row*this.column) {
+                            this.score ++;
+                            if(this.score == this.row*this.column) {
                                 alert("YOU WIN, CONGRATULATIONS!");
                                 document.location.reload();
                                 clearInterval(this.interval); // Needed for Chrome to end game
