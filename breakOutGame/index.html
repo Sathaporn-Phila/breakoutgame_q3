@@ -79,6 +79,12 @@
                     this.paddleX = relativeX - this.paddleWidth/2;
             }
         }
+        moveLeft(){
+            this.paddleX += this.speedX;
+        }
+        moveRight(){
+            this.paddleX -= this.speedX;
+        }
     }
     class InputProcessor{
         constructor(){
@@ -109,6 +115,15 @@
         }
         mouseMoveHandler(e){
             this.relativeX = e.clientX - this.canvas.offsetLeft;
+        }
+        
+        checkEvent(paddle){
+
+        if(this.keyLeft && paddle.paddleX < this.canvas.width- paddle.paddleWidth) {
+            paddle.moveLeft();
+        }else if(this.keyRight && paddle.paddleX > 0) {
+            paddle.moveRight();
+        }
         }
     }
     class World{
@@ -165,6 +180,7 @@
             this.collisionDetection();
             this.drawScore();
             this.drawLives();
+            this.inputProcessor.checkEvent(this.paddle);
 
             if(this.ball.x + this.ball.speedX > this.canvas.width-this.ball.Radius || this.ball.x + this.ball.speedX  < this.ball.Radius) {
                 this.ball.bounceX();
@@ -191,12 +207,10 @@
                 }
 
             }
-            if(this.inputProcessor.keyLeft && this.paddle.paddleX < this.canvas.width-this.paddle.paddleWidth) {
-                this.paddle.paddleX += this.paddle.speedX;
-            }
-            else if(this.inputProcessor.keyRight && this.paddle.paddleX > 0) {
-                this.paddle.paddleX -= this.paddle.speedX;
-            }
+            
+                
+            
+            
         }
         collisionDetection(){
             for(var c=0; c<this.column; c++) {
