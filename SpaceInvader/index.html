@@ -1,0 +1,92 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Break out Game</title>
+    <style>
+    	* { padding: 0; margin: 0; }
+    	canvas { background: #eee; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+<canvas id="myCanvas" width="480" height="320"></canvas>
+<script>
+//These value will be changed after first commit//
+    class Player{
+        constructor(){
+            this.life;
+            this.x;
+            this.y;
+            this.speedX;
+        }
+        draw(){
+
+        }
+        fire(){
+
+        }
+        moveLeft(){
+
+        }
+        moveRight(){
+
+        }
+    }
+    class Enemy{
+        constructor(){
+            this.x;
+            this.y;
+            this.life;
+            this.speedY
+            this.status;
+        }
+        draw(){
+
+        }
+        fire(){
+
+        }
+        move(){
+
+        }
+    }
+    class Bullet{
+        constructor(){
+            this.x;
+            this.y;
+            this.speed;
+        }
+    }
+    class InputProcessor{
+        constructor(){
+            this.bullet;
+        }
+        keydown(){
+
+        }
+        keyup(){
+
+        }
+        mouseMove(){
+
+        }
+    }
+    class World{
+        constructor(){
+            this.player = new Player();
+            this.bullet = [];
+            this.enemy = [];
+            this.score;
+        }
+        update(){
+
+        }
+        drawScore(){
+
+        }
+        collisionDetection(){
+
+        }
+    }
+</script>
+</body>
+</html>
