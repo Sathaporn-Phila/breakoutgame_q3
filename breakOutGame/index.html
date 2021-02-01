@@ -74,56 +74,36 @@
             this.ctx.fill();
             this.ctx.closePath();
         }
-        checkMouseRelative(relativeX){
-            if(relativeX > 0 && relativeX < this.canvas.width) {
-                    this.paddleX = relativeX - this.paddleWidth/2;
-            }
-        }
         moveLeft(){
-            this.paddleX += this.speedX;
+            this.paddleX -= this.speedX;
         }
         moveRight(){
-            this.paddleX -= this.speedX;
+            this.paddleX += this.speedX;
         }
     }
     class InputProcessor{
         constructor(){
             this.relativeX = 0;
-            this.keyLeft = false;
-            this.keyRight = false;
             this.canvas = document.getElementById("myCanvas");
             var _this = this;
-            document.onkeydown = function(event){_this.pushDown(event.which)}
-            document.onkeyup = function(event){_this.pushUp(event.which)}
+
+            document.addEventListener("keydown", this.pushDown, false);
             document.onmousemove = function(event){_this.mouseMoveHandler(event)}
+            
         }
-        pushDown(key){
-            if(key == 37){
-                this.keyRight = true;
+        pushDown(e){
+            if(e.key == "Right" || e.key == "ArrowRight"){
+                w.paddle.moveRight();
             }
-            else if(key == 39){
-                this.keyLeft = true;
-            }
-        }
-        pushUp(key){
-            if(key == 37){
-                this.keyRight = false;
-            }
-            else if(key == 39){
-                this.keyLeft = false;
+            else if(e.key == "Left" || e.key == "ArrowLeft"){
+                w.paddle.moveLeft();
             }
         }
         mouseMoveHandler(e){
             this.relativeX = e.clientX - this.canvas.offsetLeft;
-        }
-        
-        checkEvent(paddle){
-
-        if(this.keyLeft && paddle.paddleX < this.canvas.width- paddle.paddleWidth) {
-            paddle.moveLeft();
-        }else if(this.keyRight && paddle.paddleX > 0) {
-            paddle.moveRight();
-        }
+            if(this.relativeX > 0 && this.relativeX < this.canvas.width) {
+                w.paddle.paddleX = this.relativeX - w.paddle.paddleWidth/2;
+            }
         }
     }
     class World{
@@ -131,8 +111,8 @@
             this.canvas = document.getElementById("myCanvas");
             this.ctx = this.canvas.getContext("2d");
             this.ball = new Ball(this.canvas.width/2,this.canvas.height/2);
-            this.brick = [];
             this.paddle = new Paddle();
+            this.brick = [];
             this.row = r;
             this.column = c;
             this.inputProcessor = new InputProcessor();
@@ -147,7 +127,6 @@
                     this.brick[c][r] = new Brick();
                 }
             }
-            console.log(this.brick);
         }
         drawBricks(){
             for(var c =0; c<this.column;c++){
@@ -175,12 +154,10 @@
             this.ball.draw();
             this.ball.move();
             this.paddle.draw();
-            this.paddle.checkMouseRelative(this.inputProcessor.relativeX);
             this.drawBricks();
             this.collisionDetection();
             this.drawScore();
             this.drawLives();
-            this.inputProcessor.checkEvent(this.paddle);
 
             if(this.ball.x + this.ball.speedX > this.canvas.width-this.ball.Radius || this.ball.x + this.ball.speedX  < this.ball.Radius) {
                 this.ball.bounceX();
@@ -207,10 +184,6 @@
                 }
 
             }
-            
-                
-            
-            
         }
         collisionDetection(){
             for(var c=0; c<this.column; c++) {
@@ -233,9 +206,6 @@
         }
     }
 var w = new World(3,5);
-function run() {
-    w.update();
-}
 
 </script>
 </body>
