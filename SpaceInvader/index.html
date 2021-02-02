@@ -14,12 +14,18 @@
     class Player{
         constructor(){
             this.life;
-            this.x;
-            this.y;
-            this.speedX;
+            this.height = 20;
+            this.width = 20;
+            this.x = document.getElementById("myCanvas").width/2;
+            this.y = document.getElementById("myCanvas").height-this.height;
+            this.speedX = 7;
         }
         draw(){
-
+            document.getElementById("myCanvas").getContext("2d").beginPath();
+            document.getElementById("myCanvas").getContext("2d").rect(this.x, this.y, this.width, this.height);
+            document.getElementById("myCanvas").getContext("2d").fillStyle = "lightblue";
+            document.getElementById("myCanvas").getContext("2d").fill();
+            document.getElementById("myCanvas").getContext("2d").closePath();
         }
         fire(){
 
@@ -33,14 +39,20 @@
     }
     class Enemy{
         constructor(){
-            this.x;
-            this.y;
+            this.x = document.getElementById("myCanvas").width/2;
+            this.radius = 15;
+            this.y = this.radius*2;
             this.life;
-            this.speedY
+            this.speedY;
             this.status;
+            this.countToMove = 0;
         }
         draw(){
-
+            document.getElementById("myCanvas").getContext("2d").beginPath();
+            document.getElementById("myCanvas").getContext("2d").arc(this.x, this.y, this.radius, 0, Math.PI*2);
+            document.getElementById("myCanvas").getContext("2d").fillStyle = "red";
+            document.getElementById("myCanvas").getContext("2d").fill();
+            document.getElementById("myCanvas").getContext("2d").closePath();
         }
         fire(){
 
@@ -73,12 +85,16 @@
     class World{
         constructor(){
             this.player = new Player();
+            this.InputProcessor = new InputProcessor();
             this.bullet = [];
-            this.enemy = [];
+            this.enemy = new Enemy();
             this.score;
+            this.row = 7;
+            this.column = 5;
         }
         update(){
-
+            this.player.draw();
+            this.enemy.draw();
         }
         drawScore(){
 
@@ -87,6 +103,8 @@
 
         }
     }
+    var w = new World();
+w.update();
 </script>
 </body>
 </html>
