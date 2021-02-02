@@ -33,8 +33,10 @@
 
         }
         moveLeft(){
+            this.x -= this.speedX;
         }
         moveRight(){
+            this.x += this.speedX;
         }
     }
     class Enemy{
@@ -46,7 +48,7 @@
             this.offsetX = 30;
             this.offsetY = 30;
             this.life;
-            this.speedY;
+            this.speedY = 1;
             this.status = 1;
             this.countToMove = 0;
         }
@@ -61,7 +63,6 @@
 
         }
         move(){
-            
         }
     }
     class Bullet{
@@ -81,12 +82,15 @@
     class InputProcessor{
         constructor(){
             this.bullet;
+            document.addEventListener("keydown", this.keydown, false)
         }
-        keydown(){
-
-        }
-        keyup(){
-
+        keydown(e){
+            if(e.key == "Right" || e.key == "ArrowRight"){
+                w.player.moveRight();
+            }
+            else if(e.key == "Left" || e.key == "ArrowLeft"){
+                w.player.moveLeft();
+            }
         }
         mouseMove(){
 
@@ -95,6 +99,8 @@
     
     class World{
         constructor(){
+            this.canvas = document.getElementById("myCanvas");
+            this.ctx = this.canvas.getContext("2d");
             this.player = new Player();
             this.InputProcessor = new InputProcessor();
             this.bullet = [];
@@ -102,6 +108,8 @@
             this.score;
             this.row = 5;
             this.column = 10;
+            var _this = this;
+            this.interval = setInterval(function(){_this.update();},10)
             for(var c=0; c<this.column;c++){
                 this.enemy[c] = [];
                 for(var r=0; r<this.row;r++){
@@ -112,8 +120,11 @@
             }    
         }
         update(){
-            this.player.draw();
-            this.drawEnemy();
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+            this.player.draw()
+            this.drawEnemy()
+            
+            
             
         }
         drawScore(){
