@@ -50,7 +50,7 @@
             this.life;
             this.speedY = 0.1;
             this.status = 1;
-            this.frontRow;
+            this.coolDown = 0;
             
         }
         draw(){
@@ -61,6 +61,16 @@
             document.getElementById("myCanvas").getContext("2d").closePath();
         }
         fire(bullet){
+            let rnd = Math.floor(Math.random()*2);
+            console.log(rnd,this.coolDown)
+            if(this.coolDown > 300 && rnd == 1){
+                w.eBullet[w.eBullet.length] = new Bullet(this.x, this.y+this.radius)
+                this.coolDown =0;
+            }
+            else if(this.coolDown > 300){
+                this.coolDown =0;
+            }
+            this.coolDown++
         }
         move(){
             this.y += this.speedY;
@@ -78,7 +88,7 @@
             this.y -= this.speed;
         }
         moveDown(){
-            this.y += this.speed;
+            this.y += 4;
         }
         draw(){
             document.getElementById("myCanvas").getContext("2d").beginPath();
@@ -95,7 +105,6 @@
             document.addEventListener("keydown", this.keydown, false)
         }
         keydown(e){
-            console.log(e.keyCode)
             if(e.key == "Right" || e.key == "ArrowRight"){
                 w.player.moveRight();
             }
@@ -118,7 +127,7 @@
             this.player = new Player();
             this.InputProcessor = new InputProcessor();
             this.pBullet = [];
-            
+            this.eBullet =[]
             this.enemy = [];
             this.score;
             this.row = 5;
@@ -139,11 +148,8 @@
         update(){
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
-            console.log(this.pBullet.length)
             for(var tmp=0; tmp<this.pBullet.length;tmp++){
                 this.pBullet[tmp].draw();
-            }
-            for(var tmp=0; tmp<this.pBullet.length;tmp++){
                 this.pBullet[tmp].moveUp();
             }
 
@@ -151,14 +157,19 @@
             this.drawEnemy()
             this.moveEnemy()
             
-            
+            this.enemyFire()
+            for(var tmp=0; tmp<this.eBullet.length;tmp++){
+                this.eBullet[tmp].draw();
+                this.eBullet[tmp].moveDown();
+            }
+        
         }
         drawScore(){
 
         }
         drawEnemy(){
-            for(var c=0; c<this.column;c++){
-                for(var r=0; r<this.row;r++){
+            for(var c=0; c<this.enemy.length;c++){
+                for(var r=0; r<this.enemy[c].length;r++){
                     if(this.enemy[c][r].status == 1){
                         this.enemy[c][r].draw();                        
                     }
@@ -166,8 +177,8 @@
             }    
         }
         moveEnemy(){
-            for(var c=0; c<this.column;c++){
-                for(var r=0; r<this.row;r++){
+            for(var c=0; c<this.enemy.length;c++){
+                for(var r=0; r<this.enemy[c].length;r++){
                     if(this.enemy[c][r].status == 1){
                         this.enemy[c][r].move();                      
                     }
@@ -178,8 +189,14 @@
         collisionDetection(){
 
         }
+        enemyFire(){
+            for(var c=0; c<this.column;c++){
+                this.enemy[c][this.enemy[c].length-1].fire()
+            }     
+        }
     }
 var w = new World();
+
 w.update();
 </script>
 </body>
