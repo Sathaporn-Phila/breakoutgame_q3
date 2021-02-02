@@ -4,11 +4,11 @@
     <title>Break out Game</title>
     <style>
     	* { padding: 0; margin: 0; }
-    	canvas { background: #eee; display: block; margin: 0 auto; }
+    	canvas { background:#eee ; display: block; margin: 0 auto; }
     </style>
 </head>
 <body>
-<canvas id="myCanvas" width="480" height="320"></canvas>
+<canvas id="myCanvas" width="480" height="600"></canvas>
 <script>
 //These value will be changed after first commit//
     class Player{
@@ -26,25 +26,28 @@
             document.getElementById("myCanvas").getContext("2d").fillStyle = "lightblue";
             document.getElementById("myCanvas").getContext("2d").fill();
             document.getElementById("myCanvas").getContext("2d").closePath();
+            
+            
         }
-        fire(){
+        fire(bullet){
 
         }
         moveLeft(){
-
         }
         moveRight(){
-
         }
     }
     class Enemy{
         constructor(){
-            this.x = document.getElementById("myCanvas").width/2;
+            this.x ;
+            this.y ;
             this.radius = 15;
-            this.y = this.radius*2;
+            this.padding = 30;
+            this.offsetX = 30;
+            this.offsetY = 30;
             this.life;
             this.speedY;
-            this.status;
+            this.status = 1;
             this.countToMove = 0;
         }
         draw(){
@@ -58,14 +61,21 @@
 
         }
         move(){
-
+            
         }
     }
     class Bullet{
-        constructor(){
-            this.x;
-            this.y;
-            this.speed;
+        constructor(tmpX, tmpY){
+            this.x = tmpX;
+            this.y = tmpY;
+            this.speed = 2;
+        }
+        moveUp(){
+            
+        }
+        moveDown(){}
+        draw(){
+            
         }
     }
     class InputProcessor{
@@ -82,28 +92,48 @@
 
         }
     }
+    
     class World{
         constructor(){
             this.player = new Player();
             this.InputProcessor = new InputProcessor();
             this.bullet = [];
-            this.enemy = new Enemy();
+            this.enemy = [];
             this.score;
-            this.row = 7;
-            this.column = 5;
+            this.row = 5;
+            this.column = 10;
+            for(var c=0; c<this.column;c++){
+                this.enemy[c] = [];
+                for(var r=0; r<this.row;r++){
+                    this.enemy[c][r] = new Enemy();
+                    this.enemy[c][r].x = (c*(this.enemy[c][r].radius+this.enemy[c][r].padding))+this.enemy[c][r].offsetX;
+                    this.enemy[c][r].y = (r*(this.enemy[c][r].radius+this.enemy[c][r].padding)) + this.enemy[c][r].offsetY;    
+                }
+            }    
         }
         update(){
             this.player.draw();
-            this.enemy.draw();
+            this.drawEnemy();
+            
         }
         drawScore(){
 
         }
+        drawEnemy(){
+            for(var c=0; c<this.column;c++){
+                for(var r=0; r<this.row;r++){
+                    if(this.enemy[c][r].status == 1){
+                        this.enemy[c][r].draw();                        
+                    }
+                }
+            }    
+        }
         collisionDetection(){
 
         }
+         
     }
-    var w = new World();
+var w = new World();
 w.update();
 </script>
 </body>
