@@ -185,6 +185,16 @@
                         this.eBullet.shift()                        
                     }
             }
+            
+            for(var c=0; c<this.column;c++){
+                if (this.enemy[c].length > 0){
+                    if(this.enemy[c][this.enemy[c].length-1].y + this.enemy[c][this.enemy[c].length-1].radius> this.player.y){
+                        alert(" GAME OVER !!")
+                        document.location.reload();
+                        clearInterval(this.interval);
+                    }
+                }
+            }
         }
         drawScore(){
 
