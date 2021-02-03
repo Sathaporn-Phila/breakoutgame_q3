@@ -174,15 +174,17 @@
             }
 
             for(var i = 0; i< this.eBullet.length ; i++){
-                    console.log(this.eBullet[i].x);
                     if( this.eBullet[i].x > this.player.x && this.eBullet[i].x < this.player.x+this.player.width  && this.eBullet[i].y+this.eBullet[i].height >this.player.y){
                         alert(" You Die !!")
                         document.location.reload();
                         clearInterval(this.interval);
-
+                        
+                    }
+                    else if(this.eBullet[i].y > this.canvas.height){
+                        this.eBullet.shift()
                     }
             }
-
+            console.log(this.eBullet)
         }
         drawScore(){
 
