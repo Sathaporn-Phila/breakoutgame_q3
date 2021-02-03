@@ -30,7 +30,7 @@
             
         }
         fire(bullet){
-            bullet[bullet.length] = new Bullet(this.x+this.width/2, this.y-this.height)
+            bullet[bullet.length] = new Bullet(this.x+this.width/2, this.y-this.height, 'yellow')
         }
         moveLeft(){
             this.x -= this.speedX;
@@ -63,7 +63,7 @@
         fire(bullet){
             let rnd = Math.floor(Math.random()*2);
             if(this.coolDown > 300 && rnd == 1){
-                w.eBullet[w.eBullet.length] = new Bullet(this.x, this.y+this.radius)
+                w.eBullet[w.eBullet.length] = new Bullet(this.x, this.y+this.radius, 'red')
                 this.coolDown =0;
             }
             else if(this.coolDown > 300){
@@ -76,12 +76,13 @@
         }
     }
     class Bullet{
-        constructor(tmpX, tmpY){
+        constructor(tmpX, tmpY, color){
             this.x = tmpX;
             this.y = tmpY;
             this.width = 4;
             this.height = 15;
             this.speed = 10;
+            this.color = color
         }
         moveUp(){
             this.y -= this.speed;
@@ -92,7 +93,7 @@
         draw(){
             document.getElementById("myCanvas").getContext("2d").beginPath();
             document.getElementById("myCanvas").getContext("2d").rect(this.x, this.y, this.width, this.height);
-            document.getElementById("myCanvas").getContext("2d").fillStyle = "yellow";
+            document.getElementById("myCanvas").getContext("2d").fillStyle = String(this.color);
             document.getElementById("myCanvas").getContext("2d").lineWidth = 5;
             document.getElementById("myCanvas").getContext("2d").stroke();
             document.getElementById("myCanvas").getContext("2d").fill();
@@ -178,13 +179,12 @@
                         alert(" You Die !!")
                         document.location.reload();
                         clearInterval(this.interval);
-                        
+
                     }
                     else if(this.eBullet[i].y > this.canvas.height){
-                        this.eBullet.shift()
+                        this.eBullet.shift()                        
                     }
             }
-            console.log(this.eBullet)
         }
         drawScore(){
 
