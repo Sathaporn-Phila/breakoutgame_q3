@@ -128,9 +128,10 @@
             this.pBullet = [];
             this.eBullet =[]
             this.enemy = [];
-            this.score;
+            this.score = 0;
             this.row = 5;
             this.column = 10;
+            this.score = 0;
             var _this = this;
             this.interval = setInterval(function(){_this.update();},10)
 
@@ -155,6 +156,7 @@
             this.player.draw()
             this.drawEnemy()
             this.moveEnemy()
+            this.drawScore()
             
             this.enemyFire()
             for(var tmp=0; tmp<this.eBullet.length;tmp++){
@@ -179,13 +181,13 @@
                         alert(" You Die !!")
                         document.location.reload();
                         clearInterval(this.interval);
-
+                        
                     }
                     else if(this.eBullet[i].y > this.canvas.height){
-                        this.eBullet.shift()                        
+                        this.eBullet.shift()
                     }
             }
-            
+
             for(var c=0; c<this.column;c++){
                 if (this.enemy[c].length > 0){
                     if(this.enemy[c][this.enemy[c].length-1].y + this.enemy[c][this.enemy[c].length-1].radius> this.player.y){
@@ -195,9 +197,17 @@
                     }
                 }
             }
+
+            if(this.score === this.column*this.row){
+                alert(" !!WINNER!!")
+                document.location.reload();
+                clearInterval(this.interval);
+            }
         }
         drawScore(){
-
+            this.ctx.font = "16px Arial";
+            this.ctx.fillStyle = "#0095DD";
+            this.ctx.fillText("Score: "+this.score, 0, 20);
         }
         drawEnemy(){
             for(var c=0; c<this.enemy.length;c++){
@@ -225,6 +235,7 @@
         DetectBulletToEnemy(obj , bullet){
             for(var i = 0; i< bullet.length; i++){
                 if( obj.y + obj.radius > bullet[i].y && bullet[i].y < obj.y - obj.radius && bullet[i].x < obj.x + obj.radius && bullet[i].x > obj.x - obj.radius){
+                    w.score +=1
                     bullet.shift();
                     return true
                         
