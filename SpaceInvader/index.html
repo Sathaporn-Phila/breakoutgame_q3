@@ -62,7 +62,7 @@
         }
         fire(bullet){
             let rnd = Math.floor(Math.random()*2);
-            console.log(rnd,this.coolDown)
+            // console.log(rnd,this.coolDown)
             if(this.coolDown > 300 && rnd == 1){
                 w.eBullet[w.eBullet.length] = new Bullet(this.x, this.y+this.radius)
                 this.coolDown =0;
@@ -111,7 +111,7 @@
             else if(e.key == "Left" || e.key == "ArrowLeft"){
                 w.player.moveLeft();
             }else if(e.code == "Space"){
-                console.log("fdgdfg")
+                // console.log("fdgdfg")
                 w.player.fire(w.pBullet);
             }
         }
@@ -162,6 +162,18 @@
                 this.eBullet[tmp].draw();
                 this.eBullet[tmp].moveDown();
             }
+
+            for(var c=0; c<this.enemy.length;c++){
+                if(this.enemy[c].length > 0){
+                    for(var r=0; r<this.enemy[c].length;r++){
+                        if(this.enemy[c][r].status == 1){
+                            if(this.collisionDetection(this.enemy[c][r], this.pBullet)){
+                                this.enemy[c].pop();
+                            }
+                        }    
+                    }                      
+                }
+            }
         
         }
         drawScore(){
@@ -186,14 +198,30 @@
             }   
         }
         
-        collisionDetection(){
+        collisionDetection(obj , bullet){
+            for(var i = 0; i< bullet.length; i++){
+                if( obj.y + obj.radius > bullet[i].y && bullet[i].y < obj.y - obj.radius && bullet[i].x < obj.x + obj.radius && bullet[i].x > obj.x - obj.radius){
+                    bullet.shift();
+                    return true
+                    
+                }else if (bullet[i].y < 0){
+                    bullet.shift();
+                    return false
+                }
 
+                else{
+                    return false
+                }
+            }
         }
         enemyFire(){
             for(var c=0; c<this.column;c++){
-                this.enemy[c][this.enemy[c].length-1].fire()
+                if (this.enemy[c].length > 0){
+                    this.enemy[c][this.enemy[c].length-1].fire()
+                }
             }     
         }
+        
     }
 var w = new World();
 
