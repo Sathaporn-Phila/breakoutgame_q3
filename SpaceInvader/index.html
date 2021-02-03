@@ -62,7 +62,6 @@
         }
         fire(bullet){
             let rnd = Math.floor(Math.random()*2);
-            // console.log(rnd,this.coolDown)
             if(this.coolDown > 300 && rnd == 1){
                 w.eBullet[w.eBullet.length] = new Bullet(this.x, this.y+this.radius)
                 this.coolDown =0;
@@ -111,7 +110,6 @@
             else if(e.key == "Left" || e.key == "ArrowLeft"){
                 w.player.moveLeft();
             }else if(e.code == "Space"){
-                // console.log("fdgdfg")
                 w.player.fire(w.pBullet);
             }
         }
@@ -167,43 +165,57 @@
                 if(this.enemy[c].length > 0){
                     for(var r=0; r<this.enemy[c].length;r++){
                         if(this.enemy[c][r].status == 1){
-                            if(this.collisionDetection(this.enemy[c][r], this.pBullet)){
+                            if(this.DetectBulletToEnemy(this.enemy[c][r], this.pBullet)){
                                 this.enemy[c].pop();
                             }
                         }    
                     }                      
                 }
             }
-        
+
+            for(var i = 0; i< this.eBullet.length ; i++){
+                    console.log(this.eBullet[i].x);
+                    if( this.eBullet[i].x > this.player.x && this.eBullet[i].x < this.player.x+this.player.width  && this.eBullet[i].y+this.eBullet[i].height >this.player.y){
+                        alert(" You Die !!")
+                        document.location.reload();
+                        clearInterval(this.interval);
+
+                    }
+            }
+
         }
         drawScore(){
 
         }
         drawEnemy(){
             for(var c=0; c<this.enemy.length;c++){
-                for(var r=0; r<this.enemy[c].length;r++){
-                    if(this.enemy[c][r].status == 1){
-                        this.enemy[c][r].draw();                        
+                if(this.enemy[c].length > 0){
+                    for(var r=0; r<this.enemy[c].length;r++){
+                        if(this.enemy[c][r].status == 1){
+                            this.enemy[c][r].draw();                        
+                        }
                     }
                 }
             }    
         }
         moveEnemy(){
             for(var c=0; c<this.enemy.length;c++){
-                for(var r=0; r<this.enemy[c].length;r++){
-                    if(this.enemy[c][r].status == 1){
-                        this.enemy[c][r].move();                      
+                if(this.enemy[c].length > 0){
+                    for(var r=0; r<this.enemy[c].length;r++){
+                        if(this.enemy[c][r].status == 1){
+                            this.enemy[c][r].move();                      
+                        }
                     }
                 }
             }   
         }
         
-        collisionDetection(obj , bullet){
+        DetectBulletToEnemy(obj , bullet){
             for(var i = 0; i< bullet.length; i++){
                 if( obj.y + obj.radius > bullet[i].y && bullet[i].y < obj.y - obj.radius && bullet[i].x < obj.x + obj.radius && bullet[i].x > obj.x - obj.radius){
                     bullet.shift();
                     return true
-                    
+                        
                 }else if (bullet[i].y < 0){
                     bullet.shift();
                     return false
@@ -221,7 +233,6 @@
                 }
             }     
         }
-        
     }
 var w = new World();
 
