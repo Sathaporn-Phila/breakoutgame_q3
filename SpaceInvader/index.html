@@ -102,7 +102,10 @@
     }
     class InputProcessor{
         constructor(){
+            this.relativeX = 0;
             document.addEventListener("keydown", this.keydown, false)
+            document.addEventListener("mousemove",this.mouseMove,false)
+            document.addEventListener("click",this.clicked,false)
         }
         keydown(e){
             if(e.key == "Right" || e.key == "ArrowRight"){
@@ -114,8 +117,16 @@
                 w.player.fire(w.pBullet);
             }
         }
-        mouseMove(){
-
+        mouseMove(e){
+            this.relativeX = e.clientX - w.canvas.offsetLeft;
+            if(this.relativeX > 0 && this.relativeX < w.canvas.width) {//ถ้าเมาส์อยู่ใน Canvas
+                w.player.x = this.relativeX - w.player.width/2;
+            }
+        }
+        clicked(e){
+            if (e.button == 0){
+                w.player.fire(w.pBullet);
+            }
         }
     }
     
@@ -159,11 +170,13 @@
             this.drawScore()
             
             this.enemyFire()
+
+
             for(var tmp=0; tmp<this.eBullet.length;tmp++){
                 this.eBullet[tmp].draw();
                 this.eBullet[tmp].moveDown();
             }
-
+            //the enemy disappear when a player hit
             for(var c=0; c<this.enemy.length;c++){
                 if(this.enemy[c].length > 0){
                     for(var r=0; r<this.enemy[c].length;r++){
@@ -175,33 +188,36 @@
                     }                      
                 }
             }
-
+            //the bullet hit a player
             for(var i = 0; i< this.eBullet.length ; i++){
                     if( this.eBullet[i].x > this.player.x && this.eBullet[i].x < this.player.x+this.player.width  && this.eBullet[i].y+this.eBullet[i].height >this.player.y){
-                        alert(" You Die !!")
-                        document.location.reload();
+                        this.endGameMessage = "You die!!"
+                        //document.location.reload();
                         clearInterval(this.interval);
+                        this.tryAgainPage(this.endGameMessage,this.score);
                         
                     }
                     else if(this.eBullet[i].y > this.canvas.height){
                         this.eBullet.shift()
                     }
             }
-
+            //the spaceship collision with a player
             for(var c=0; c<this.column;c++){
                 if (this.enemy[c].length > 0){
                     if(this.enemy[c][this.enemy[c].length-1].y + this.enemy[c][this.enemy[c].length-1].radius> this.player.y){
-                        alert(" GAME OVER !!")
-                        document.location.reload();
+                        this.endGameMessage = "Game Over!!"
+                        //document.location.reload();
                         clearInterval(this.interval);
+                        this.tryAgainPage(this.endGameMessage,this.score);
                     }
                 }
             }
-
+            // the all enemy is disappear
             if(this.score === this.column*this.row){
-                alert(" !!WINNER!!")
-                document.location.reload();
+                this.endGameMessage = "Winner!!"
+                //document.location.reload();
                 clearInterval(this.interval);
+                this.tryAgainPage(this.endGameMessage,this.score);
             }
         }
         drawScore(){
@@ -255,6 +271,14 @@
                     this.enemy[c][this.enemy[c].length-1].fire()
                 }
             }     
+        }
+        tryAgainPage(){
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+            this.ctx.font = "40px Arial";
+            this.ctx.fillStyle = "orange";
+            this.ctx.fillText(this.endGameMessage, this.canvas.width/3, this.canvas.height/3);
+            this.ctx.fillStyle = "black";
+            this.ctx.fillText("Score : " + this.score, this.canvas.width/3, this.canvas.height/2);
         }
     }
 var w = new World();
