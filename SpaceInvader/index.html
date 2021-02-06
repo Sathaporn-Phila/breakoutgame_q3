@@ -48,7 +48,8 @@
             this.offsetX = 30;
             this.offsetY = 30;
             this.life;
-            this.speedY = 0.1;
+            this.speedY = 15;
+            this.speedX = 0.2;
             this.status = 1;
             this.coolDown = 0;
             
@@ -141,7 +142,7 @@
             this.enemy = [];
             this.score = 0;
             this.row = 5;
-            this.column = 10;
+            this.column = 7;
             this.score = 0;
             var _this = this;
             this.interval = setInterval(function(){_this.update();},10)
@@ -241,7 +242,33 @@
                 if(this.enemy[c].length > 0){
                     for(var r=0; r<this.enemy[c].length;r++){
                         if(this.enemy[c][r].status == 1){
-                            this.enemy[c][r].move();                      
+                            this.enemy[c][r].x +=  this.enemy[c][r].speedX
+                            if (this.enemy[c][r].x + this.enemy[c][r].radius > this.canvas.width){
+                                // loop เพื่อให้ทุกตัวเดินลงเเล้วกลับทิศการเคลื่อนที่
+                                for (var i = 0 ; i <this.enemy.length;i++){
+                                    if(this.enemy[i].length > 0){
+                                        for(var k=0; k <this.enemy[i].length; k++){
+                                            if(this.enemy[i][k].status == 1){
+                                                this.enemy[i][k].move();
+                                                this.enemy[i][k].speedX = -this.enemy[i][k].speedX;
+                                            }
+                                        }
+                                    }
+                                }
+                                // this.enemy[c][r].move();
+                                // this.enemy[c][r].speedX = -this.enemy[c][r].speedX;
+                            }else if(this.enemy[c][r].x - this.enemy[c][r].radius < 0){
+                                for (var i = 0 ; i <this.enemy.length;i++){
+                                    if(this.enemy[i].length > 0){
+                                        for(var k=0; k <this.enemy[i].length; k++){
+                                            if(this.enemy[i][k].status == 1){
+                                                this.enemy[i][k].move();
+                                                this.enemy[i][k].speedX = -this.enemy[i][k].speedX;
+                                            }
+                                        }
+                                    }
+                                }
+                            }                    
                         }
                     }
                 }
