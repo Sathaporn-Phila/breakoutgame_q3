@@ -1,4 +1,5 @@
 <html>
+<html>
 <head>
     <meta charset="utf-8" />
     <title>Space Invader</title>
@@ -12,13 +13,17 @@
 <script>
 //These value will be changed after first commit//
     class Player{
-        constructor(){
+        constructor(magazine){
             this.life;
             this.height = 20;
             this.width = 20;
             this.x = document.getElementById("myCanvas").width/2;
             this.y = document.getElementById("myCanvas").height-this.height;
             this.speedX = 7;
+            this.maxCoolDown = 3;
+            this.coolDown = this.maxCoolDown;
+            this.magazine = magazine;
+            this.countBullet = 0;
         }
         draw(){
             document.getElementById("myCanvas").getContext("2d").beginPath();
@@ -30,7 +35,12 @@
             
         }
         fire(bullet){
-            bullet[bullet.length] = new Bullet(this.x+this.width/2, this.y-this.height, 'yellow')
+            if(this.coolDown>=this.maxCoolDown && this.countBullet <= this.magazine){
+                bullet[bullet.length] = new Bullet(this.x+this.width/2, this.y-this.height, 'yellow')
+                this.coolDown = 0;
+                this.magazine--;
+            }
+            this.coolDown++
         }
         moveLeft(){
             this.x -= this.speedX;
@@ -82,14 +92,14 @@
             this.y = tmpY;
             this.width = 4;
             this.height = 15;
-            this.speed = 10;
+            this.speed = 3;
             this.color = color
         }
         moveUp(){
             this.y -= this.speed;
         }
         moveDown(){
-            this.y += 4;
+            this.y += this.speed;
         }
         draw(){
             document.getElementById("myCanvas").getContext("2d").beginPath();
@@ -132,17 +142,17 @@
     }
     
     class World{
-        constructor(){
+        constructor(co, ro){
+            this.row = ro;
+            this.column = co;
             this.canvas = document.getElementById("myCanvas");
             this.ctx = this.canvas.getContext("2d");
-            this.player = new Player();
+            this.player = new Player(this.row*this.column*2);
             this.InputProcessor = new InputProcessor();
             this.pBullet = [];
             this.eBullet =[]
             this.enemy = [];
             this.score = 0;
-            this.row = 5;
-            this.column = 7;
             this.score = 0;
             var _this = this;
             this.interval = setInterval(function(){_this.update();},10)
@@ -165,6 +175,7 @@
                 this.pBullet[tmp].moveUp();
             }
 
+            this.drawMagazine()
             this.player.draw()
             this.drawEnemy()
             this.moveEnemy()
@@ -307,8 +318,13 @@
             this.ctx.fillStyle = "black";
             this.ctx.fillText("Score : " + this.score, this.canvas.width/3, this.canvas.height/2);
         }
+        drawMagazine(){
+            this.ctx.font = "16px Arial";
+            this.ctx.fillStyle = "#0095DD";
+            this.ctx.fillText("Magazine: "+this.player.magazine, this.canvas.width-120, 20);
+        }
     }
-var w = new World();
+var w = new World(7, 5);
 
 w.update();
 </script>
