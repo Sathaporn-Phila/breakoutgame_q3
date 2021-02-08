@@ -11,7 +11,6 @@
 <body>
 <canvas id="myCanvas" width="480" height="600"></canvas>
 <script>
-//These value will be changed after first commit//
     class Player{
         constructor(magazine){
             this.life;
@@ -25,6 +24,7 @@
             this.magazine = magazine;
             this.countBullet = 0;
         }
+        // วาดผู้เล่น
         draw(){
             document.getElementById("myCanvas").getContext("2d").beginPath();
             document.getElementById("myCanvas").getContext("2d").rect(this.x, this.y, this.width, this.height);
@@ -34,17 +34,20 @@
             
             
         }
+        // ให้ผู้เล่นยิงกระสุน
         fire(bullet){
-            if(this.coolDown>=this.maxCoolDown && this.countBullet <= this.magazine){
+            if(this.coolDown>=this.maxCoolDown && this.countBullet <= this.magazine){//ถ้ากระสุนไม่อยู่ในระยะเวลา delay และกระสุนยังไม่หมด
                 bullet[bullet.length] = new Bullet(this.x+this.width/2, this.y-this.height, 'yellow')
                 this.coolDown = 0;
                 this.magazine--;
             }
             this.coolDown++
         }
+        //สั่งให้ผู้เล่นเดินไปทางซ้าย
         moveLeft(){
             this.x -= this.speedX;
         }
+        //สั่งให้ผู้เล่นเดินไปทางขวา
         moveRight(){
             this.x += this.speedX;
         }
@@ -64,6 +67,7 @@
             this.coolDown = 0;
             
         }
+        // วาดตัวศัตรู
         draw(){
             document.getElementById("myCanvas").getContext("2d").beginPath();
             document.getElementById("myCanvas").getContext("2d").arc(this.x, this.y, this.radius, 0, Math.PI*2);
@@ -71,17 +75,19 @@
             document.getElementById("myCanvas").getContext("2d").fill();
             document.getElementById("myCanvas").getContext("2d").closePath();
         }
+        // สั่งให้ enemy ยิง
         fire(bullet){
             let rnd = Math.floor(Math.random()*2);
             if(this.coolDown > 300 && rnd == 1){
                 w.eBullet[w.eBullet.length] = new Bullet(this.x, this.y+this.radius, 'red')
                 this.coolDown =0;
             }
-            else if(this.coolDown > 300){
+            else if(this.coolDown > 300){   
                 this.coolDown =0;
             }
             this.coolDown++
         }
+        // สั่งให้ enemy เคลื่อนที่
         move(){
             this.y += this.speedY;
         }
@@ -95,12 +101,15 @@
             this.speed = 3;
             this.color = color
         }
+        // สั่งให้กระสุนเคลื่อนที่ขึ้นด้านบน
         moveUp(){
             this.y -= this.speed;
         }
+        // สั่งให้กระสุนเคลื่อนที่ลงด้านล่าง
         moveDown(){
             this.y += this.speed;
         }
+        //วาดตัวกระสุน
         draw(){
             document.getElementById("myCanvas").getContext("2d").beginPath();
             document.getElementById("myCanvas").getContext("2d").rect(this.x, this.y, this.width, this.height);
@@ -114,29 +123,32 @@
     class InputProcessor{
         constructor(){
             this.relativeX = 0;
+            // ตัวจัดการ input เมือเกิดการกดปุ่มหรือคลิกเมาส์
             document.addEventListener("keydown", this.keydown, false)
             document.addEventListener("mousemove",this.mouseMove,false)
             document.addEventListener("click",this.clicked,false)
         }
         keydown(e){
-            if(e.key == "Right" || e.key == "ArrowRight"){
+            if(e.key == "Right" || e.key == "ArrowRight"){ //ถ้ากดปุ่มลุกศรขวา
                 w.player.moveRight();
             }
-            else if(e.key == "Left" || e.key == "ArrowLeft"){
+            else if(e.key == "Left" || e.key == "ArrowLeft"){//ถ้ากดปุ่มลุกศรซ้าย
                 w.player.moveLeft();
-            }else if(e.code == "Space"){
+            }else if(e.code == "Space"){//ผู้เล่นยิงกระสุนเมื่อกด Spacebar
                 w.player.fire(w.pBullet);
             }
         }
+        
         mouseMove(e){
             this.relativeX = e.clientX - w.canvas.offsetLeft;
             if(this.relativeX > 0 && this.relativeX < w.canvas.width) {//ถ้าเมาส์อยู่ใน Canvas
                 w.player.x = this.relativeX - w.player.width/2;
             }
         }
+        
         clicked(e){
             if (e.button == 0){
-                w.player.fire(w.pBullet);
+                w.player.fire(w.pBullet);//กระสุนถูกยิงออกจากผู้เล่น
             }
         }
     }
@@ -157,7 +169,7 @@
             var _this = this;
             this.interval = setInterval(function(){_this.update();},10)
 
-            
+            // สร้าง enemy
             for(var c=0; c<this.column;c++){
                 this.enemy[c] = [];
                 for(var r=0; r<this.row;r++){
@@ -171,30 +183,30 @@
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
             for(var tmp=0; tmp<this.pBullet.length;tmp++){
-                this.pBullet[tmp].draw();
-                this.pBullet[tmp].moveUp();
+                this.pBullet[tmp].draw();   //วาดกระสุนของ player แต่ละนัด
+                this.pBullet[tmp].moveUp();  //สั่งให้กระสุนเคลื่อนที่ขึ้น
             }
 
-            this.drawMagazine()
-            this.player.draw()
-            this.drawEnemy()
-            this.moveEnemy()
-            this.drawScore()
+            this.drawMagazine() //วาดจำนวนกระสุนที่เหลืออยู่
+            this.player.draw()  //วาดตัว player
+            this.drawEnemy()    //วาดตัว enemy
+            this.moveEnemy()    //สั่งให้ enemy เคลื่อนที่
+            this.drawScore()    //วาดคะแนนที่ player ทำได้
             
-            this.enemyFire()
+            this.enemyFire()    //สั่งให้ enemy ยิง
 
 
             for(var tmp=0; tmp<this.eBullet.length;tmp++){
-                this.eBullet[tmp].draw();
-                this.eBullet[tmp].moveDown();
+                this.eBullet[tmp].draw();   //วาดกระสุนของ enemy
+                this.eBullet[tmp].moveDown();   //สั่งให้กระสุนเคลื่อนที่
             }
             //the enemy disappear when a player hit
             for(var c=0; c<this.enemy.length;c++){
                 if(this.enemy[c].length > 0){
                     for(var r=0; r<this.enemy[c].length;r++){
                         if(this.enemy[c][r].status == 1){
-                            if(this.DetectBulletToEnemy(this.enemy[c][r], this.pBullet)){
-                                this.enemy[c].pop();
+                            if(this.DetectBulletToEnemy(this.enemy[c][r], this.pBullet)){   //ถ้า player ยิงโดน enemy
+                                this.enemy[c].pop();    //enemy ตาย
                             }
                         }    
                     }                      
@@ -202,52 +214,53 @@
             }
             //the bullet hit a player
             for(var i = 0; i< this.eBullet.length ; i++){
+                    //ถ้า enemy ยิงโดน player 
                     if( this.eBullet[i].x > this.player.x && this.eBullet[i].x < this.player.x+this.player.width  && this.eBullet[i].y+this.eBullet[i].height >this.player.y){
-                        this.endGameMessage = "You die!!"
-                        //document.location.reload();
-                        clearInterval(this.interval);
-                        this.tryAgainPage(this.endGameMessage,this.score);
+                        this.endGameMessage = "You die!!"   
+                        clearInterval(this.interval);   
+                        this.tryAgainPage(this.endGameMessage,this.score);  // player ตาย
                         
                     }
-                    else if(this.eBullet[i].y > this.canvas.height){
-                        this.eBullet.shift()
+                    else if(this.eBullet[i].y > this.canvas.height){ //ถ้ากระสุนออกนอกจอ
+                        this.eBullet.shift()   //ลบกระสุนนัดนั้นออก
                     }
             }
             //the spaceship collision with a player
             for(var c=0; c<this.column;c++){
                 if (this.enemy[c].length > 0){
-                    if(this.enemy[c][this.enemy[c].length-1].y + this.enemy[c][this.enemy[c].length-1].radius> this.player.y){
+                    if(this.enemy[c][this.enemy[c].length-1].y + this.enemy[c][this.enemy[c].length-1].radius> this.player.y){//ถ้า enemy ชนกับ player
                         this.endGameMessage = "Game Over!!"
-                        //document.location.reload();
                         clearInterval(this.interval);
-                        this.tryAgainPage(this.endGameMessage,this.score);
+                        this.tryAgainPage(this.endGameMessage,this.score);  //player ตาย
                     }
                 }
             }
             // the all enemy is disappear
-            if(this.score === this.column*this.row){
+            if(this.score === this.column*this.row){    //ถ้า enemy ตายหมด
                 this.endGameMessage = "Winner!!"
-                //document.location.reload();
                 clearInterval(this.interval);
-                this.tryAgainPage(this.endGameMessage,this.score);
+                this.tryAgainPage(this.endGameMessage,this.score); // player ชนะ
             }
         }
+        // วาดคะเเนนที่ทำได้
         drawScore(){
             this.ctx.font = "16px Arial";
             this.ctx.fillStyle = "#0095DD";
             this.ctx.fillText("Score: "+this.score, 0, 20);
         }
         drawEnemy(){
+            // loop วาด enemy ทุกตัว
             for(var c=0; c<this.enemy.length;c++){
                 if(this.enemy[c].length > 0){
                     for(var r=0; r<this.enemy[c].length;r++){
-                        if(this.enemy[c][r].status == 1){
-                            this.enemy[c][r].draw();                        
+                        if(this.enemy[c][r].status == 1){   //ถ้า enemy ยังมีชีวิต
+                            this.enemy[c][r].draw();    //วาด enemy                        
                         }
                     }
                 }
             }    
         }
+        // สั่งให้ enemy ทั้งกองทัพเดิน
         moveEnemy(){
             for(var c=0; c<this.enemy.length;c++){
                 if(this.enemy[c].length > 0){
@@ -266,9 +279,8 @@
                                         }
                                     }
                                 }
-                                // this.enemy[c][r].move();
-                                // this.enemy[c][r].speedX = -this.enemy[c][r].speedX;
                             }else if(this.enemy[c][r].x - this.enemy[c][r].radius < 0){
+                                // loop เพื่อให้ทุกตัวเดินลงเเล้วกลับทิศการเคลื่อนที่
                                 for (var i = 0 ; i <this.enemy.length;i++){
                                     if(this.enemy[i].length > 0){
                                         for(var k=0; k <this.enemy[i].length; k++){
@@ -286,15 +298,16 @@
             }   
         }
         
-        DetectBulletToEnemy(obj , bullet){
+        DetectBulletToEnemy(obj , bullet){//ตรวจเช็คว่ากระสุนยิงโดนศัตรูหนือไม่
             for(var i = 0; i< bullet.length; i++){
+                //ถ้ากระสุนโดนศัตรู
                 if( obj.y + obj.radius > bullet[i].y && bullet[i].y < obj.y - obj.radius && bullet[i].x < obj.x + obj.radius && bullet[i].x > obj.x - obj.radius){
                     w.score +=1
-                    bullet.shift();
+                    bullet.shift();//ลบกระสุนออก
                     return true
                         
-                }else if (bullet[i].y < 0){
-                    bullet.shift();
+                }else if (bullet[i].y < 0){//ถ้ากระสุนเกินจอ
+                    bullet.shift();//ลบกระสุนออก
                     return false
                 }
 
@@ -306,7 +319,7 @@
         enemyFire(){
             for(var c=0; c<this.column;c++){
                 if (this.enemy[c].length > 0){
-                    this.enemy[c][this.enemy[c].length-1].fire()
+                    this.enemy[c][this.enemy[c].length-1].fire() //สั่งให้ enemy ที่อยู่หน้าสุดยิง
                 }
             }     
         }
@@ -324,6 +337,7 @@
             this.ctx.fillText("Magazine: "+this.player.magazine, this.canvas.width-120, 20);
         }
     }
+    
 var w = new World(7, 5);
 
 w.update();
